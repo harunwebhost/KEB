@@ -258,15 +258,25 @@ function mycustomer(){
 	// View customer sales details
 	function salesdetails(){
 				$search=$this->input->get();
-				$data['admin_url']=$this->admin_url();
-				$data['show']=true;
-				$data['title']="Sold Item";
-				$data['submit_url']=$this->admin_url().'addsale';
-				$condition=array('customer_id'=>$search['customer_id']);
-				$data['sales']=$this->stock->filtersales($condition);
-				//$this->debug($data['customer']);
-				$data['body']="customer_sales.php";
-				$this->view($data);
+				// this is for view page
+				if(!empty($search['customer_id'])){
+					$data['sales']=$this->stock->filtersales($search);
+					$data['customer']=$this->stock->customers($search['customer_id']);
+					$data['body']="customer_sales.php";
+					$data['show']=true;
+					$data['title']="Sold Item";
+					$this->view($data);
+				}else{
+					$data['admin_url']=$this->admin_url();
+					$data['show']=true;
+					$data['title']="Seach Sales";
+					$data['submit_url']=$this->admin_url().'salesdetails';
+					$data['customer']=$this->stock->customers("");
+					$data['body']="search_form.php";
+					$this->view($data);
+				}
+
+				
 	}
 
 
@@ -309,7 +319,8 @@ function addsale(){
 		$inputs=$_POST;
 		//$this->debug($inputs);
 		 //$insert_count=count(array_filter($inputs['sell_quantity']));
-		
+		$from_date=date('Y-m-d');
+		$customer_id=$data[$i]['customer_id']=$inputs['customer_id'];
 		for($i=0;$i<count($inputs['sell_quantity']);$i++){
 			if($inputs['sell_quantity'][$i]!=0){
 			$data[$i]['item_id']=$inputs['item_id'][$i];
@@ -325,7 +336,7 @@ function addsale(){
 		}
 		
 		$this->stock->sales($data);
-		$this->jump('sales',$msg="");
+		$this->jump("salesdetails?customer_id=$customer_id&from=$from_date&to=$from_date",$msg="");
 	}
 }
 

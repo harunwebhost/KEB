@@ -125,13 +125,35 @@ class Stock extends ci_model
 	// function to sales filter
 
 	function filtersales($condition){
+
 			$this->db->select('*');
 			$this->db->from('sold');
 			$this->db->join('customers','customers.customer_id=sold.customer_id');
 			$this->db->join('item_details','item_details.item_id=sold.item_id');
-			$query=$this->db->get_where('sold',array('purchase_id'=>$selected_pro));
+
+			if(!empty($condition['customer_id']) && empty($condition['from'])){
+			$this->db->where(array('sold.customer_id'=>$condition['customer_id']));
+			//$query=$this->db->get_where('sold',array('purchase_id'=>$selected_pro));
+			}else{
+				$min=$condition['from'] ;
+				$max=$condition['to'];
+				/*print_r($condition);
+				exit("lkk");*/
+				$this->db->where('sold.customer_id',$condition['customer_id']);
+				if(!empty($min) && !empty($max)){
+				$this->db->where('sold.sold_date>=',$min);
+				$this->db->where('sold.sold_date<=',$max);
+				}elseif(!empty($min) && empty($max)){
+					$this->db->where('sold.sold_date>=',$min);
+				}
+
+				/*,'sold.sold_date'=>$condition['from']*/
+				/*$this->debug();*/
+			}
+			$query=$this->db->get();
+			//$this->debug();
 			return $query->result_array();
-			$this->debug();
+			
 	}
 
 	function debug(){

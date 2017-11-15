@@ -3,19 +3,38 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <?php echo $title; ?>
+                            <div class="btn-group pull-right" role="group">
+                        <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         More Action
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a href="#" onclick="printDiv('dataTables-example')">Print</a></li>
+                         <li><a href="" id="btnExport">Export to xls</a></li>
+                        </ul>
+                      </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                       
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
                                 <thead>
+                                <tr>
+                                    <th colspan="4"><h3 align="center">MAHALAXMI ELECTRIC GOKAK</h3></th>
+                                </tr>
+                                    <tr>
+                                            <th>Customer: <?php echo $customer[0]['customer_name'] ?></th>
+                                        <th>Customer: <?php echo $customer[0]['customer_contact'] ?></th>
+                                        <th>Date: <?php echo date('Y-m-d') ?></th>
+                                        <th>Print by Admin</th>
+                                    </tr>
                                     <tr>
                                         <th>Product Name</th>
                                         <th>Quantity</th>
                                          <th>Unit</th>
                                         <th>Date</th>
                                         
-                                        <th>Action</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -29,55 +48,12 @@
                                         <td><?php echo $value['unit'];?></td>
                                         <td><?php echo $value['sold_date'];?></td>
                                        
-                                        <td></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
 
                             </table>
-                            <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                       Customer Information
-                      
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-lg-offset-3">
-                        
-                                <form action="<?php echo $submit_url; ?>" method="POST" id="formID">
-                                        <div class="form-group">
-                                            <label>Select Customers</label>
-                                            <select name="customer_id" class="form-control">
-                                                <?php foreach ($customer as $value){
-                                                  ?>
-                                                  <option value="<?php echo $value['customer_id'] ?>"
-                                                  <?php if($value['customer_id']==$customer[0]['customer_id']){echo "selected";} ?>
-                                                  ><?php echo $value['customer_name'] ?></option>
-                                                <?php }?>
-                                            </select>
-                                         </div>
-                                         <div class="form-group">
-                                            <label>Select Search</label>
-                                            <input type="date" class="form-control validate[required] datepicker" name="purchase_date"
-                                            value="<?php echo @$purchases[0]['purchase_date']; ?>" id="req">
-                                            
-                                        </div>
-                                         <div class="form-group">
-                                            <input type="submit" value="Sell" class="btn btn-success">
-                                         </div>
-                                 </form>
-                                </div>
-                                <!-- /.col-lg-6 (nested) -->
-                                </div>
-                                <!-- /.col-lg-6 (nested) -->
-                            </div>
                             
-                            <!-- /.row (nested) -->
-                           
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
                     <!-- /.panel -->
             </div>
                            
@@ -88,7 +64,22 @@
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-12 -->
-<?php } else{?>
-    
+<?php } ?>
+<script>
+    function printDiv() {
+    var divToPrint = document.getElementById('dataTables-example');
+    var htmlToPrint = '' +
+        '<style type="text/css">' +
+        'table th, table td {' +
+        'border:1px solid #000;' +
+        'padding;0.5em;' +
+        '}' +
+        '</style>';
+    htmlToPrint += divToPrint.outerHTML;
+    newWin = window.open("");
+    newWin.document.write(htmlToPrint);
+    newWin.print();
+    newWin.close();
+}
+</script>
 
-<?php }?>
